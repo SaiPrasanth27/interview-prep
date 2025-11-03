@@ -124,7 +124,7 @@ const LandingPage = () => {
           </div>
         </div>
         <div className="text-sm bg-gray-50 text-secondary text-center p-5 mt-5">
-          Made with ❤️ by Sanjeet Sahu
+          Made with ❤️ by Prasanth.
         </div>
       </div>
       <Modal 

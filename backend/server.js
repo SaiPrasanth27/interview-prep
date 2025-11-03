@@ -19,9 +19,10 @@ const app = express();
 // Middleware to handle cors
 app.use(
   cors({
-    origin: '*',
+    origin: ['http://localhost:5173', 'https://*.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
   })
 );
 
@@ -40,8 +41,8 @@ app.use('/api/ai/generate-explanation', protect, generateConceptExplanation);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Start server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, async () => {
   await connectDB();
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
