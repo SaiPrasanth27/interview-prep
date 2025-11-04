@@ -3,14 +3,27 @@ const Session = require('../models/Session.js');
 
 const addQuestionsToSession = async (req, res) => {
     try {
+        console.log("Add questions request:", req.body);
+        
         const { sessionId, questions } = req.body;
+        
+        console.log("Received data:", { sessionId, questionsCount: questions?.length, questionsType: typeof questions });
+        
         if (!sessionId || !questions || !Array.isArray(questions)) {
-            return res.status(400).json({ message: "Invalid input data" });
+            console.log("Validation failed:", { sessionId: !!sessionId, questions: !!questions, isArray: Array.isArray(questions) });
+            return res.status(400).json({ 
+                message: "Invalid input data",
+                received: { sessionId: !!sessionId, questions: !!questions, isArray: Array.isArray(questions) }
+            });
         }
+        
         const session = await Session.findById(sessionId);
         if (!session) {
             return res.status(404).json({ message: "Session not found" });
         }
+        
+        console.log("Creating questions for session:", sessionId);
+        
         // create new Questions
         const createdQuestions = await Question.insertMany(
             questions.map((q) => ({
@@ -19,12 +32,16 @@ const addQuestionsToSession = async (req, res) => {
                 answer: q.answer,
             }))
         );
+        
         // update session to include new question IDs
         session.questions.push(...createdQuestions.map((q) => q._id));
         await session.save();
 
+        console.log("Successfully added", createdQuestions.length, "questions");
+        
         res.status(201).json({ createdQuestions });
     } catch (error) {
+        console.error("Add questions error:", error);
         res.status(500).json({ success: false, message: "Server error", error: error.message });
     }
 };
