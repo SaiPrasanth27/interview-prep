@@ -19,7 +19,11 @@ const app = express();
 // Middleware to handle cors
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'https://*.vercel.app'],
+    origin: [
+      'http://localhost:5173',
+      'https://interview-prep-w2dy-mocha.vercel.app',
+      /https:\/\/.*\.vercel\.app$/
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
