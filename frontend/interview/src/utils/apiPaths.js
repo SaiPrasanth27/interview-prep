@@ -1,4 +1,4 @@
-export const BASE_URL = "https://interview-prep-backend-w6e0.onrender.com";
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://interview-prep-backend-w6e0.onrender.com";
 
 export const API_PATHS = {
   AUTH: {
