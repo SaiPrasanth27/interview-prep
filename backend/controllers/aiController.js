@@ -7,20 +7,30 @@ const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const generateInterviewQuestions = async (req, res) => {
   try {
+    console.log("AI Request received:", req.body);
+    console.log("User:", req.user?.email);
+    
     const { role, experience, topicsToFocus, numberOfQuestions } = req.body;
     if (!role || !experience || !topicsToFocus || !numberOfQuestions) {
       return res.status(400).json({ message: "Missing required fields" });
     }
+    
+    console.log("Generating questions for:", { role, experience, topicsToFocus, numberOfQuestions });
+    
     const prompt = questionAnswerPrompt(role, experience, topicsToFocus, numberOfQuestions);
     const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
     const response = await model.generateContent(prompt);
     let rawText = response.response.text();
+    
+    console.log("AI Response received, length:", rawText.length);
+    
     const cleanedText = rawText.replace(/^json\s*/, "").replace(/$/, "").trim();
     let data;
     try {
       data = JSON.parse(cleanedText);
     } catch (jsonError) {
       console.error("JSON parsing error:", jsonError);
+      console.error("Raw text:", rawText);
       return res.status(500).json({ message: "Invalid JSON format in AI response" });
     }
     res.status(200).json(data);

@@ -22,6 +22,7 @@ app.use(
     origin: [
       'http://localhost:5173',
       'https://interview-prep-w2dy-mocha.vercel.app',
+      'https://interview-prep-one-zeta.vercel.app',
       /https:\/\/.*\.vercel\.app$/
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
