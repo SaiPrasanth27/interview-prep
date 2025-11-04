@@ -6,13 +6,13 @@ const Session = require('../models/Session.js');
 // @access Private
 const createSession = async (req, res) => {
     try {
-        const { role, experience, topicsToFocus, questions } = req.body;
+        const { role, experience, topicsToFocus, questions, description } = req.body;
         const userId = req.user.id;
         const session = await Session.create({
             role,
             experience,
             topicsToFocus,
-            description,
+            description: description || `${role} Interview Session`,
             user: userId
         });
         const questionsDocs = await Promise.all(
