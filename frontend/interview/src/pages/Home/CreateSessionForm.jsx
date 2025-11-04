@@ -32,6 +32,8 @@ const CreateSessionForm = () => {
         setError("");
         setIsLoading(true);
         try{
+            console.log("Starting session creation process...");
+            
             //Call AI API TO generate questions
             const aiResponse = await axiosInstance.post(API_PATHS.AI.GENERATE_QUESTIONS,{
                 role,
@@ -44,16 +46,31 @@ const CreateSessionForm = () => {
             }
             
           )
-          console.log(aiResponse);
+          console.log("AI Response:", aiResponse);
+          
           //should be array like [{question: "", answer: ""}]
           const generatedQuestions = aiResponse.data.questions || aiResponse.data;
           console.log("Generated questions:", generatedQuestions);
+          
+          // Validate that we have questions
+          if (!generatedQuestions || !Array.isArray(generatedQuestions) || generatedQuestions.length === 0) {
+            throw new Error("No questions were generated. Please try again.");
+          }
+          
+          console.log("Creating session with", generatedQuestions.length, "questions");
+          
           const response = await axiosInstance.post(API_PATHS.SESSION.CREATE, {
             ...formData,
             questions: generatedQuestions,
           })
+          
+          console.log("Session creation response:", response);
+          
           if(response.data?.session?._id){
+            console.log("Navigating to session:", response.data.session._id);
             navigate(`/interview-prep/${response.data?.session?._id}`);
+          } else {
+            throw new Error("Session was created but no ID was returned");
           }
         }catch(error){
             if(error.response && error.response.data.message){
