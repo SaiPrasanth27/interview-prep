@@ -59,10 +59,7 @@ const generateConceptExplanation = async (req, res) => {
     
     // Temporary mock response for concept explanation
     const mockExplanation = {
-      explanation: "This is a fundamental concept that involves understanding key principles and best practices. " +
-                  "It requires knowledge of core technologies, implementation patterns, and real-world applications. " +
-                  "Key areas to focus on include: theoretical foundations, practical implementation, common pitfalls to avoid, " +
-                  "and industry best practices. This concept is essential for developers and is commonly asked in technical interviews.",
+      explanation: "This is a fundamental concept that involves understanding key principles and best practices. It requires knowledge of core technologies, implementation patterns, and real-world applications. Key areas to focus on include: theoretical foundations, practical implementation, common pitfalls to avoid, and industry best practices.",
       keyPoints: [
         "Understanding the fundamental principles",
         "Practical implementation techniques", 
@@ -79,22 +76,6 @@ const generateConceptExplanation = async (req, res) => {
     console.log("Mock explanation generated for question:", question);
     res.status(200).json(mockExplanation);
     
-    // TODO: Uncomment when real AI is working
-    /*
-    const prompt = conceptExplainPrompt(question);
-    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const response = await model.generateContent(prompt);
-    let rawText = response.response.text();
-    const cleanedText = rawText.replace(/^json\s*/, "").replace(/$/, "").trim();
-    let data;
-    try {
-      data = JSON.parse(cleanedText);
-    } catch (jsonError) {
-      console.error("JSON parsing error:", jsonError);
-      return res.status(500).json({ message: "Invalid JSON format in AI response" });
-    }
-    res.status(200).json(data);
-    */
   } catch (error) {
     console.error("AI explanation error:", error);
     res.status(500).json({
