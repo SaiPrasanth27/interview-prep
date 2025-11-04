@@ -6,8 +6,22 @@ const Session = require('../models/Session.js');
 // @access Private
 const createSession = async (req, res) => {
     try {
+        console.log("Session creation request:", req.body);
+        console.log("User:", req.user?.email);
+        
         const { role, experience, topicsToFocus, questions, description } = req.body;
         const userId = req.user.id;
+        
+        console.log("Creating session with:", { role, experience, topicsToFocus, userId });
+        
+        if (!role || !experience || !topicsToFocus || !questions) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "Missing required fields",
+                received: { role, experience, topicsToFocus, questionsCount: questions?.length }
+            });
+        }
+        
         const session = await Session.create({
             role,
             experience,
@@ -15,8 +29,12 @@ const createSession = async (req, res) => {
             description: description || `${role} Interview Session`,
             user: userId
         });
+        
+        console.log("Session created:", session._id);
+        
         const questionsDocs = await Promise.all(
-            questions.map(async (q) => {
+            questions.map(async (q, index) => {
+                console.log(`Creating question ${index + 1}:`, q);
                 const question = await Question.create({
                     session: session._id,
                     question: q.question,
@@ -25,10 +43,15 @@ const createSession = async (req, res) => {
                 return question._id;
             })
         );
+        
         session.questions = questionsDocs;
         await session.save();
+        
+        console.log("Session saved with questions:", questionsDocs.length);
+        
         res.status(201).json({ success: true, message: "Session created successfully", session });
     } catch (error) {
+        console.error("Session creation error:", error);
         res.status(500).json({ success: false, message: "Server error", error: error.message });
     }
 };
