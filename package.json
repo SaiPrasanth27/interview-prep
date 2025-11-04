@@ -2,7 +2,7 @@
   "name": "interview-app",
   "version": "1.0.0",
   "scripts": {
-    "build": "cd frontend/interview && npm install && npm run build && cd ../.. && xcopy frontend\\interview\\dist dist /E /I /Y",
+    "build": "npm install --prefix frontend/interview && npm run build --prefix frontend/interview",
     "start": "cd backend && npm start"
   },
   "dependencies": {},

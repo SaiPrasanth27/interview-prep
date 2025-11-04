@@ -1,11 +1,18 @@
 {
-  "buildCommand": "cd frontend/interview && npm install && npm run build",
-  "outputDirectory": "frontend/interview/dist",
-  "installCommand": "npm install",
-  "rewrites": [
+  "version": 2,
+  "builds": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "frontend/interview/dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "frontend/interview/dist/$1"
     }
   ]
 }
