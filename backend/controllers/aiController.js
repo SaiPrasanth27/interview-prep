@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const { conceptExplainPrompt, questionAnswerPrompt } = require('../utils/prompt.js');
 
-const ai = new GoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY });
+const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const generateInterviewQuestions = async (req, res) => {
   try {
@@ -12,11 +12,9 @@ const generateInterviewQuestions = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
     const prompt = questionAnswerPrompt(role, experience, topicsToFocus, numberOfQuestions);
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-lite",
-      contents: prompt,
-    });
-    let rawText = response.text;
+    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const response = await model.generateContent(prompt);
+    let rawText = response.response.text();
     const cleanedText = rawText.replace(/^json\s*/, "").replace(/$/, "").trim();
     let data;
     try {
@@ -42,11 +40,9 @@ const generateConceptExplanation = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
     const prompt = conceptExplainPrompt(question);
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-lite",
-      contents: prompt,
-    });
-    let rawText = response.text;
+    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const response = await model.generateContent(prompt);
+    let rawText = response.response.text();
     const cleanedText = rawText.replace(/^json\s*/, "").replace(/$/, "").trim();
     let data;
     try {
