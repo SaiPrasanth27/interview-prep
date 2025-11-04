@@ -29,6 +29,15 @@ app.use(
 // Middleware
 app.use(express.json());
 
+// Health check route
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Interview Prep API is running!', 
+    status: 'healthy',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/sessions', sessionRoutes);
